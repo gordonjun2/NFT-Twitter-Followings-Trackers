@@ -37,7 +37,7 @@ start_time = time.time()
 
 ### Discord Channel Webhook ###
 
-WEBHOOK_URL = 'https://discord.com/api/webhooks/937332643064860724/UNx8Ea2Xh1v-8s9PuiV2UACPhm9NwW5Jcg6HKxGA3j5hqhM9s21zhKk77vWjSkOyz90Y'
+WEBHOOK_URL = ''
 
 print('\nScanning what the degens are following ...\n')
 
