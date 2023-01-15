@@ -37,7 +37,7 @@ start_time = time.time()
 
 ### Discord Channel Webhook ###
 
-WEBHOOK_URL = ''
+WEBHOOK_URL = 'https://discord.com/api/webhooks/937332643064860724/UNx8Ea2Xh1v-8s9PuiV2UACPhm9NwW5Jcg6HKxGA3j5hqhM9s21zhKk77vWjSkOyz90Y'
 
 print('\nScanning what the degens are following ...\n')
 
@@ -168,7 +168,7 @@ for line in lines:
                         timeout = 40   # [seconds]
                         timeout_start = time.time()
                     for text in driver.find_elements_by_xpath('//div[@id="user_column_summary_screen_name"]'):
-                        if line in text.get_attribute('textContent'):
+                        if line.lower() in text.get_attribute('textContent'):
                             page_flag = 1
                             break
                     for text in driver.find_elements_by_xpath('//div[@class="white_page"]'):
@@ -249,15 +249,14 @@ for line in lines:
 
             degen_id = line.split('/')[-1]
 
+            followings_dict[degen_id] = new_followings_set
+
             if new_file_flag == 1:
-                followings_dict[degen_id] = new_followings_set
                 cur_new_followings_set = new_followings_set
             else:
                 if degen_id in prev_followings_dict:
-                    followings_dict[degen_id] = new_followings_set
                     cur_new_followings_set = new_followings_set - set(prev_followings_dict[degen_id])
                 else:
-                    followings_dict[degen_id] = new_followings_set
                     cur_new_followings_set = new_followings_set
 
             followings_text = ''
