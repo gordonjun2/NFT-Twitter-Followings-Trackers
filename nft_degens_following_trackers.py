@@ -168,7 +168,7 @@ for line in lines:
                         timeout = 40   # [seconds]
                         timeout_start = time.time()
                     for text in driver.find_elements_by_xpath('//div[@id="user_column_summary_screen_name"]'):
-                        if line.lower() in text.get_attribute('textContent'):
+                        if line.lower() in text.get_attribute('textContent').lower():
                             page_flag = 1
                             break
                     for text in driver.find_elements_by_xpath('//div[@class="white_page"]'):
