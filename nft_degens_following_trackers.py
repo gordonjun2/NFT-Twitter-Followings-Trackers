@@ -15,12 +15,12 @@ try:
     from rich.console import Console
     from rich.table import Column, Table
     import random
+    import platform
     from discord_webhook import DiscordWebhook, DiscordEmbed
 
     from selenium.webdriver.chrome.options import Options
 
     chrome_options=Options()
-    chrome_options.binary_location = "C:\Program Files\Google\Chrome\Application\chrome.exe"
     # chrome_options.addArguments("--window-size=1920,1080")
     # chrome_options.addArguments("--start-maximized")
     chrome_options.add_argument("--headless")
@@ -112,7 +112,14 @@ rerun_num = 1
 
 # time.sleep(5)
 
-driver = webdriver.Chrome('./chromedriver_win32/chromedriver.exe', chrome_options=chrome_options)
+if 'mac' in platform.platform().lower():
+    print('PC is not Mac OS, using chromedriver for MacOS ...\n')
+    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    driver = webdriver.Chrome('./chromedriver_mac64/chromedriver', chrome_options=chrome_options)
+else:
+    print('PC is Windows OS, using chromedriver for Windows ...\n')
+    chrome_options.binary_location = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+    driver = webdriver.Chrome('./chromedriver_win32/chromedriver.exe', chrome_options=chrome_options)
 
 followings_dict = {}
 cur_new_followings_summary_set = set()
