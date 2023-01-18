@@ -130,6 +130,7 @@ table = Table(show_lines = True, header_style="bold yellow")
 table.add_column("Degen", style="dim", width=40)
 table.add_column("New Followings in Twitter", justify="right")
 
+homepage = 'https://en.whotwi.com/'
 total_degens = len(lines)
 count = 0
 
@@ -147,8 +148,6 @@ for line in lines:
     while (rerun_state == 0):
 
         try:
-
-            homepage = 'https://en.whotwi.com/'
 
             print('(' + str(count) + '/' + str(total_degens) + ') ' + 'Scanning @' + line.split('/')[-1] + ' ...\n')
 
@@ -297,47 +296,48 @@ for line in lines:
 
             rerun_state = 1
 
-        except:
+        except Exception as e:
             rerun_state = 0
             rerun_num = rerun_num + 1
             if (rerun_num == 5):
                 rerun_state = 1
-                print("Error encountered when scraping data from Twitter. Skipping the user ...")
+                print("Error encountered when scraping data from Twitter. Skipping the user after sleeping for 10 seconds ...")
+                webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Error encountered when scraping data from Twitter. Skipping user ...')
+                response = webhook.execute()
                 rerun_num = 1
             else:
-                driver.quit()
-
-                print("Error encountered when scraping data from Twitter. Retrying the user ...")                           # TO DISPLAY IN TELEGRAM BOT
-                webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Error encountered when scraping data from Twitter. Restarting ...')
+                print("Error encountered when scraping data from Twitter. Retrying the user after sleeping for 10 seconds ...")                           # TO DISPLAY IN TELEGRAM BOT
+                webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Error encountered when scraping data from Twitter. Retrying user ...')
                 response = webhook.execute()
+            
+            print('\nError message:')
+            print(e)
+            print('\n')
 
-if rerun_num == 5:
-    print("Please check the programming and try again later.")
-    webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Please check the programming and try again later.')
-    response = webhook.execute()
-else:
-    console.print(table)
+            time.sleep(10)
 
-    print("\nSummary of new followings in URL ...\n")
+console.print(table)
 
-    for unique_following in cur_new_followings_summary_set:
-        print('https://twitter.com/' + unique_following.split('@')[1])
+print("\nSummary of new followings in URL ...\n")
 
-    print("\nSaving degens' followings for next check ...\n")
+for unique_following in cur_new_followings_summary_set:
+    print('https://twitter.com/' + unique_following.split('@')[1])
 
-    file_var = open('prev_followings.txt', "w+")
-    file_var.write(str(followings_dict))
-    file_var.close()
+print("\nSaving degens' followings for next check ...\n")
 
-    driver.quit()
+file_var = open('prev_followings.txt', "w+")
+file_var.write(str(followings_dict))
+file_var.close()
 
-    print('Scanning complete.\n')
-    webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Scanning complete.')
-    response = webhook.execute()
+driver.quit()
 
-    duration = time.time() - start_time
+print('Scanning complete.\n')
+webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Scanning complete.')
+response = webhook.execute()
 
-    print('Total time taken: ' + str(duration) + 's')
+duration = time.time() - start_time
+
+print('Total time taken: ' + str(duration) + 's')
 
 
 
