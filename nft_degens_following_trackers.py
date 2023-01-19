@@ -23,13 +23,16 @@ try:
     chrome_options=Options()
     # chrome_options.addArguments("--window-size=1920,1080")
     # chrome_options.addArguments("--start-maximized")
-    chrome_options.add_argument("--headless")
+    # chrome_options.add_argument("--headless")
+    chrome_options.headless = True
     chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-gpu")
+    # chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--disable-software-rasterizer")
     # chrome_options.add_argument("window-size=1400,2100") 
     chrome_options.add_argument("--log-level=3")
     chrome_options.add_argument('--disable-dev-shm-usage')
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    chrome_options.add_experimental_option('useAutomationExtension', False)
 except:
     print("Please run 'pip install -r requirements.txt' to install the required modules before running again.\n")
 
@@ -312,7 +315,6 @@ for line in lines:
             
             print('\nError message:')
             print(e)
-            print('\n')
 
             time.sleep(10)
 
