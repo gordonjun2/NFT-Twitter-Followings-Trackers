@@ -116,7 +116,7 @@ rerun_num = 1
 # time.sleep(5)
 
 if 'mac' in platform.platform().lower():
-    print('PC is not Mac OS, using chromedriver for MacOS ...\n')
+    print('PC is Mac OS, using chromedriver for MacOS ...\n')
     chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     driver = webdriver.Chrome('./chromedriver_mac64/chromedriver', chrome_options=chrome_options)
 else:
