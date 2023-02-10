@@ -118,3 +118,5 @@ xcoinsight
 SvtValle
 sartoshi_rip
 HabideenOlonade
+LegatoFP
+DonteCrypto
