@@ -17,8 +17,8 @@ try:
     import random
     import platform
     from discord_webhook import DiscordWebhook, DiscordEmbed
-
     from selenium.webdriver.chrome.options import Options
+    import math
 
     chrome_options=Options()
     # chrome_options.addArguments("--window-size=1920,1080")
@@ -36,7 +36,25 @@ try:
 except:
     print("Please run 'pip install -r requirements.txt' to install the required modules before running again.\n")
 
+
+def init_driver():
+
+    if 'mac' in platform.platform().lower():
+        print('PC is Mac OS, using chromedriver for MacOS ...\n')
+        chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        driver = webdriver.Chrome('./chromedriver_mac64/chromedriver', chrome_options=chrome_options)
+    else:
+        print('PC is Windows OS, using chromedriver for Windows ...\n')
+        chrome_options.binary_location = "C:\Program Files\Google\Chrome\Application\chrome.exe"
+        driver = webdriver.Chrome('./chromedriver_win32/chromedriver.exe', chrome_options=chrome_options)
+
+    return driver
+
 start_time = time.time()
+
+### Initialise Chrome Driver ###
+
+driver = init_driver()
 
 ### Discord Channel Webhook ###
 
@@ -60,7 +78,7 @@ file.close()
 
 print('Retrieved the list of degens ...\n')
 
-## Create .txt that contains each degens' followings in the previous check separately
+### Create .txt that contains each degens' followings in the previous check separately ###
 
 new_file_flag = 0
 
@@ -76,54 +94,6 @@ print("Retrieved every degens' followings in the previous check ...\n")
 
 rerun_num = 1   
 
-
-### TWITTER DOES NOT SHOW FOLLOWINGS IN REVERSE CHRONOLOGICAL ORDER ###
-
-# ### Access to Twitter ###
-# url = 'https://twitter.com/i/flow/login'
-# driver.get(url)
-
-# print("Logging in ...\n")
-
-# ### Credentials ###
-
-# email = 'ENTER EMAIL'
-# username = 'ENTER TWITTER USERNAME'
-# password = 'ENTER PASSWORD'
-
-# # Find login box
-# username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//*[@class='r-30o5oe r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-1dz5y72 r-fdjqy7 r-13qz1uu']")))
-# time.sleep(3)
-# username_input.send_keys(email, Keys.ENTER)
-
-# WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//*[@class='r-30o5oe r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-1dz5y72 r-fdjqy7 r-13qz1uu']")))
-# corpus = BeautifulSoup(driver.page_source, 'html.parser')
-# text_box_unprocessed = corpus.find_all("span", {"class": "css-901oao css-16my406 r-poiln3 r-bcqeeo r-qvutc0"})
-# text_box_processed = text_box_unprocessed[0].get_text()
-
-# if 'phone number or username' in text_box_processed:
-#     user_name_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//*[@class='r-30o5oe r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-1dz5y72 r-fdjqy7 r-13qz1uu']")))
-#     time.sleep(3)
-#     user_name_input.send_keys(username, Keys.ENTER)
-#     password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//*[@class='r-30o5oe r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-1dz5y72 r-fdjqy7 r-13qz1uu']")))
-#     time.sleep(3)
-#     password_input.send_keys(password, Keys.ENTER)
-# else:
-#     password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, "//*[@class='r-30o5oe r-1niwhzg r-17gur6a r-1yadl64 r-deolkf r-homxoj r-poiln3 r-7cikom r-1ny4l3l r-t60dpp r-1dz5y72 r-fdjqy7 r-13qz1uu']")))
-#     time.sleep(3)
-#     password_input.send_keys(password, Keys.ENTER)
-
-# time.sleep(5)
-
-if 'mac' in platform.platform().lower():
-    print('PC is Mac OS, using chromedriver for MacOS ...\n')
-    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-    driver = webdriver.Chrome('./chromedriver_mac64/chromedriver', chrome_options=chrome_options)
-else:
-    print('PC is Windows OS, using chromedriver for Windows ...\n')
-    chrome_options.binary_location = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-    driver = webdriver.Chrome('./chromedriver_win32/chromedriver.exe', chrome_options=chrome_options)
-
 followings_dict = {}
 cur_new_followings_summary_set = set()
 
@@ -136,6 +106,9 @@ table.add_column("New Followings in Twitter", justify="right")
 homepage = 'https://en.whotwi.com/'
 total_degens = len(lines)
 count = 0
+discord_msg_max_char = 2000
+
+### Scanning now ###
 
 for line in lines:
     # print(line)
@@ -269,12 +242,14 @@ for line in lines:
                     cur_new_followings_set = new_followings_set
 
             followings_text = ''
+            followings_text_list = []
+            followings_text_list.append(followings_text)
 
             if len(cur_new_followings_set) == 0:
                 table.add_row(
                     degen_id, 'Nil'
                 )
-                followings_text = followings_text + 'Nil'
+                followings_text_list[0] = followings_text_list[0] + 'Nil'
             else:
                 row1_flag = 1
                 for following in cur_new_followings_set:
@@ -288,14 +263,22 @@ for line in lines:
                             ' ', following
                         )
                     cur_new_followings_summary_set.add(following)
-                    followings_text = followings_text + 'https://twitter.com/' + following.split('@')[1] + '\n' + description_dict[following] + '\n\n'
+                    new_text = 'https://twitter.com/' + following.split('@')[1] + '\n' + description_dict[following] + '\n\n'
+
+                    if len(followings_text_list[-1] + new_text) <= discord_msg_max_char:
+                        followings_text_list[-1] = followings_text_list[-1] + new_text
+                    else:
+                        followings_text_list.append(new_text)
 
             webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True)
 
-            embed = DiscordEmbed(title="(" + str(count) + "/" + str(total_degens) + ") " + "@" + degen_id + "'s latest followings", description=followings_text)
-            webhook.add_embed(embed)
-
-            response = webhook.execute()
+            for i in range(len(followings_text_list)):
+                if i == 0:
+                    embed = DiscordEmbed(title="(" + str(count) + "/" + str(total_degens) + ") " + "@" + degen_id + "'s latest followings", description=followings_text_list[i])
+                else:
+                    embed = DiscordEmbed(description=followings_text_list[i])
+                webhook.add_embed(embed)
+                response = webhook.execute()
 
             rerun_state = 1
 
@@ -304,21 +287,26 @@ for line in lines:
             rerun_num = rerun_num + 1
             if (rerun_num == 5):
                 rerun_state = 1
-                print("Error encountered when scraping data from Twitter. Skipping the user after sleeping for 10 seconds ...")
+                print("Error encountered when scraping data from Twitter. Skipping the user after restarting Chrome driver ...")
                 webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Error encountered when scraping data from Twitter. Skipping user ...')
                 response = webhook.execute()
                 rerun_num = 1
             else:
-                print("Error encountered when scraping data from Twitter. Retrying the user after sleeping for 10 seconds ...")                           # TO DISPLAY IN TELEGRAM BOT
+                print("Error encountered when scraping data from Twitter. Retrying the user after restarting Chrome driver ...")                           # TO DISPLAY IN TELEGRAM BOT
                 webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Error encountered when scraping data from Twitter. Retrying user ...')
                 response = webhook.execute()
             
             print('\nError message:')
             print(e)
 
-            time.sleep(10)
+            driver.quit()
+            driver = init_driver()
+
+            time.sleep(5)
 
 console.print(table)
+
+### Post scanning ###
 
 print("\nSummary of new followings in URL ...\n")
 
