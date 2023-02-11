@@ -270,13 +270,15 @@ for line in lines:
                     else:
                         followings_text_list.append(new_text)
 
-            webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True)
-
             for i in range(len(followings_text_list)):
+                
+                webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True)
+
                 if i == 0:
                     embed = DiscordEmbed(title="(" + str(count) + "/" + str(total_degens) + ") " + "@" + degen_id + "'s latest followings", description=followings_text_list[i])
                 else:
                     embed = DiscordEmbed(description=followings_text_list[i])
+
                 webhook.add_embed(embed)
                 response = webhook.execute()
 
