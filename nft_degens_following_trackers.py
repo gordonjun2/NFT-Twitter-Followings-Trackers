@@ -1,13 +1,10 @@
 try:
-    import tweepy
-    import requests
     from bs4 import BeautifulSoup
     from selenium import webdriver
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
     from selenium.webdriver.common.by import By
     from selenium.webdriver.common.keys import Keys
-    import re
     import os
     import time
     from datetime import datetime, timezone
@@ -18,7 +15,7 @@ try:
     import platform
     from discord_webhook import DiscordWebhook, DiscordEmbed
     from selenium.webdriver.chrome.options import Options
-    import math
+    from follow_graph import create_follow_graph
 
     chrome_options=Options()
     # chrome_options.addArguments("--window-size=1920,1080")
@@ -96,6 +93,7 @@ rerun_num = 1
 
 followings_dict = {}
 cur_new_followings_summary_set = set()
+cur_followings_dict = {}
 
 console = Console()
 
@@ -108,7 +106,7 @@ total_degens = len(lines)
 count = 0
 discord_msg_max_char = 2000
 
-### Scanning now ###
+### Scanning ###
 
 for line in lines:
     # print(line)
@@ -241,6 +239,8 @@ for line in lines:
                 else:
                     cur_new_followings_set = new_followings_set
 
+            cur_followings_dict[degen_id] = cur_new_followings_set
+
             followings_text = ''
             followings_text_list = []
             followings_text_list.append(followings_text)
@@ -306,9 +306,17 @@ for line in lines:
 
             time.sleep(5)
 
-console.print(table)
+print('Scanning complete.\n')
+webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Scanning complete.')
+response = webhook.execute()
+
+### Quit Chrome driver ###
+
+driver.quit()
 
 ### Post scanning ###
+
+console.print(table)
 
 print("\nSummary of new followings in URL ...\n")
 
@@ -321,11 +329,10 @@ file_var = open('prev_followings.txt', "w+")
 file_var.write(str(followings_dict))
 file_var.close()
 
-driver.quit()
+print("\nGenerating follow graph for the current scan ...\n")
+_ = create_follow_graph(cur_followings_dict)
 
-print('Scanning complete.\n')
-webhook = DiscordWebhook(url=WEBHOOK_URL, rate_limit_retry=True, content='Scanning complete.')
-response = webhook.execute()
+### Get total time taken ###
 
 duration = time.time() - start_time
 
