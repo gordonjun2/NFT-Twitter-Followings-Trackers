@@ -2,6 +2,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import os
+import ast
 
 def create_follow_graph(follow_dict):
 
@@ -100,38 +101,47 @@ def create_follow_graph(follow_dict):
 
     return fig
 
-### Testing function ###
+### Testing the function ###
 
-# sample_dict =   {'pranksy': 
-#                     {'@cleandood', '@Rosewolf_artist', '@rebelstudios_io', '@_Goldenwolf_', 
-#                     '@LostParadigms', '@jackbutcher', '@gabrielleydon', '@0xAndy_eth', '@futureverse' 
-#                     }, 
-#                 'SmartypantsNFT': 
-#                     {'@coinmamba', '@degenpoet', '@PalantirVision', '@ProTheDoge', '@MomoguroNFT', 
-#                     '@TateTheTalisman', '@ToysRUsNFT', '@ABC123Community', '@darenyoong', '@LtLollipop9' 
-#                     }, 
-#                 'talesrune': {'@symbiogenesisPR', '@pawwaoart', '@unfuddable', '@cryptoanon888', 
-#                     '@SweeperSolana', '@traderhuey', '@ALEXGM__', '@226ETH_', '@_3noki3_', '@CryptoCapo_' 
-#                     }, 
-#                 'fiin9021': {'@DimensionalsRPG', '@daytonmills', '@Bonne_Syu', '@ExodiaGods', 
-#                     '@MomoguroNFT', '@kaanayaz_', '@AlphaKingNFT_', '@OldeusOfficial', '@gabrielleydon' 
-#                     }, 
-#                 'SupremeGodGod': {'@xuedison3', '@Supers6061', '@nftboi_', '@SheckyLin', '@dreamfallart', 
-#                     '@backendnft', '@NephalemNFT', '@ProjectZR_X', '@gabrielleydon', '@TENGOKU_HQ'
-#                     }, 
-#                 'pinseth': {'@MFHoz', '@gurgavin', '@FIMindset__', '@KUMALEON_', '@drugstore', '@CryptoPoseidonn', 
-#                     '@unusual_whales', '@WatcherGuru', '@SnailySnailsNFT', '@skulourful', '@YakuzaFriday'
-#                     }, 
-#                 'kristopherlukas': {'@DimensionalsRPG', '@texturepunx', '@fudibles', 
-#                     '@ShinseiVillage', '@Kyuu_bi_jima', '@HelpMeTradeThis', '@skwgmi', '@central_frog'
-#                     }, 
-#                 'cozypront': {'@zulpverse', '@SteezyPS', '@3uanNFT', '@shrimpgangsol', '@L4V107_NFT', '@mahesayoms', 
-#                     '@StakeEddie', '@rigstertv', '@kimpossiblecpto', '@fresh0x', '@Jazz1x1', '@FrancoNFTS'
-#                     }, 
-#                 'EasyEatsBodega': {'@DimensionalsRPG', '@IronMike_13', 
-#                     '@_timeless_relic', '@KingFlores150', '@evanluza', '@HakoiriOfficial', '@FakeJonnyy'
-#                     }
-#                 }
+if __name__ == "__main__":
+    if os.path.exists('most_recent_followings.txt') == True:
+        print('Followings text file found, using the saved dictionary ...\n')
+        with open('most_recent_followings.txt') as f:
+            follow_dict = ast.literal_eval(f.read().replace('\n', ''))
+    else:
+        print('Followings text file not found, using a sample dictionary ...\n')
+        follow_dict =   {'pranksy': 
+                            {'@cleandood', '@Rosewolf_artist', '@rebelstudios_io', '@_Goldenwolf_', 
+                            '@LostParadigms', '@jackbutcher', '@gabrielleydon', '@0xAndy_eth', '@futureverse' 
+                            }, 
+                        'SmartypantsNFT': 
+                            {'@coinmamba', '@degenpoet', '@PalantirVision', '@ProTheDoge', '@MomoguroNFT', 
+                            '@TateTheTalisman', '@ToysRUsNFT', '@ABC123Community', '@darenyoong', '@LtLollipop9' 
+                            }, 
+                        'talesrune': {'@symbiogenesisPR', '@pawwaoart', '@unfuddable', '@cryptoanon888', 
+                            '@SweeperSolana', '@traderhuey', '@ALEXGM__', '@226ETH_', '@_3noki3_', '@CryptoCapo_' 
+                            }, 
+                        'fiin9021': {'@DimensionalsRPG', '@daytonmills', '@Bonne_Syu', '@ExodiaGods', 
+                            '@MomoguroNFT', '@kaanayaz_', '@AlphaKingNFT_', '@OldeusOfficial', '@gabrielleydon' 
+                            }, 
+                        'SupremeGodGod': {'@xuedison3', '@Supers6061', '@nftboi_', '@SheckyLin', '@dreamfallart', 
+                            '@backendnft', '@NephalemNFT', '@ProjectZR_X', '@gabrielleydon', '@TENGOKU_HQ'
+                            }, 
+                        'pinseth': {'@MFHoz', '@gurgavin', '@FIMindset__', '@KUMALEON_', '@drugstore', '@CryptoPoseidonn', 
+                            '@unusual_whales', '@WatcherGuru', '@SnailySnailsNFT', '@skulourful', '@YakuzaFriday'
+                            }, 
+                        'kristopherlukas': {'@DimensionalsRPG', '@texturepunx', '@fudibles', 
+                            '@ShinseiVillage', '@Kyuu_bi_jima', '@HelpMeTradeThis', '@skwgmi', '@central_frog'
+                            }, 
+                        'cozypront': {'@zulpverse', '@SteezyPS', '@3uanNFT', '@shrimpgangsol', '@L4V107_NFT', '@mahesayoms', 
+                            '@StakeEddie', '@rigstertv', '@kimpossiblecpto', '@fresh0x', '@Jazz1x1', '@FrancoNFTS'
+                            }, 
+                        'EasyEatsBodega': {'@DimensionalsRPG', '@IronMike_13', 
+                            '@_timeless_relic', '@KingFlores150', '@evanluza', '@HakoiriOfficial', '@FakeJonnyy'
+                            }
+                        }
 
-# fig = create_follow_graph(sample_dict)
-# fig.show()
+    fig = create_follow_graph(follow_dict)
+    fig.show()
+
+    print('Graph generated')

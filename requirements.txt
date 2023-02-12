@@ -1,6 +1,4 @@
 selenium==3.141.0
-tweepy
-requests==2.26.0
 beautifulsoup4==4.9.3
 rich==10.9.0
 discord-webhook

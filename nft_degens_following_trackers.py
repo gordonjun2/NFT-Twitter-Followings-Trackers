@@ -18,14 +18,9 @@ try:
     from follow_graph import create_follow_graph
 
     chrome_options=Options()
-    # chrome_options.addArguments("--window-size=1920,1080")
-    # chrome_options.addArguments("--start-maximized")
-    # chrome_options.add_argument("--headless")
     chrome_options.headless = True
     chrome_options.add_argument("--no-sandbox")
-    # chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--disable-software-rasterizer")
-    # chrome_options.add_argument("window-size=1400,2100") 
     chrome_options.add_argument("--log-level=3")
     chrome_options.add_argument('--disable-dev-shm-usage')
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -79,21 +74,27 @@ print('Retrieved the list of degens ...\n')
 
 new_file_flag = 0
 
-if os.path.exists('prev_followings.txt')==False:  
+if os.path.exists('prev_followings.txt') == False:  
     new_file_flag = 1
-    create_file= open("prev_followings.txt",'w+')  # This is just to  create the file in case it doesn't exist
+    create_file = open("prev_followings.txt",'w+')  # This is just to create the file in case it doesn't exist
     create_file.close()
 else:
     with open('prev_followings.txt') as f:
         prev_followings_dict = ast.literal_eval(f.read().replace('\n', ''))
 
+if os.path.exists('most_recent_followings.txt') == False:  
+    create_file = open("most_recent_followings.txt",'w+')  # This is just to create the file in case it doesn't exist
+    create_file.close()
+
 print("Retrieved every degens' followings in the previous check ...\n")
+
+### Other variables declaration ###
 
 rerun_num = 1   
 
 followings_dict = {}
 cur_new_followings_summary_set = set()
-cur_followings_dict = {}
+cur_new_followings_dict = {}
 
 console = Console()
 
@@ -104,12 +105,12 @@ table.add_column("New Followings in Twitter", justify="right")
 homepage = 'https://en.whotwi.com/'
 total_degens = len(lines)
 count = 0
+timeout = 30   # [seconds]
 discord_msg_max_char = 2000
 
 ### Scanning ###
 
 for line in lines:
-    # print(line)
 
     rerun_state = 0
 
@@ -129,15 +130,12 @@ for line in lines:
 
             driver.get(url)
 
-            # time.sleep(30)
-
             page_flag = 0
             followings_flag = 0
             user_not_found_flag = 0
             user_private_flag = 0
             user_suspended_flag = 0
 
-            timeout = 40   # [seconds]
             timeout_start = time.time()
 
             while followings_flag == 0:
@@ -145,7 +143,6 @@ for line in lines:
                     if time.time() > timeout_start + timeout:
                         print('Refreshing ' + url + ' ...\n')
                         driver.get(url)
-                        timeout = 40   # [seconds]
                         timeout_start = time.time()
                     for text in driver.find_elements_by_xpath('//div[@id="user_column_summary_screen_name"]'):
                         if line.lower() in text.get_attribute('textContent').lower():
@@ -180,7 +177,6 @@ for line in lines:
                         print('Reconnecting to ' + url + ' ...\n')
                         page_flag = 0
                         driver.get(url)
-                        timeout = 40   # [seconds]
                         timeout_start = time.time()
 
             if user_not_found_flag == 1:
@@ -239,7 +235,7 @@ for line in lines:
                 else:
                     cur_new_followings_set = new_followings_set
 
-            cur_followings_dict[degen_id] = cur_new_followings_set
+            cur_new_followings_dict[degen_id] = cur_new_followings_set
 
             followings_text = ''
             followings_text_list = []
@@ -329,8 +325,12 @@ file_var = open('prev_followings.txt', "w+")
 file_var.write(str(followings_dict))
 file_var.close()
 
+file_var = open('most_recent_followings.txt', "w+")
+file_var.write(str(cur_new_followings_dict))
+file_var.close()
+
 print("\nGenerating follow graph for the current scan ...\n")
-_ = create_follow_graph(cur_followings_dict)
+_ = create_follow_graph(cur_new_followings_dict)
 
 ### Get total time taken ###
 
