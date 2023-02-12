@@ -212,7 +212,7 @@ for line in lines:
                 response = webhook.execute()
                 break
 
-            time.sleep(random.randint(1, 3))                          # delay for human-like effect
+            time.sleep(random.uniform(1, 3))                          # delay for human-like effect
 
             new_followings_set = set()
             new_followings_list = []
