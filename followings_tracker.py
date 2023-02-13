@@ -1,32 +1,29 @@
-try:
-    from bs4 import BeautifulSoup
-    from selenium import webdriver
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.common.keys import Keys
-    import os
-    import time
-    from datetime import datetime, timezone
-    import ast
-    from rich.console import Console
-    from rich.table import Column, Table
-    import random
-    import platform
-    from discord_webhook import DiscordWebhook, DiscordEmbed
-    from selenium.webdriver.chrome.options import Options
-    from follow_graph import create_follow_graph
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+import os
+import time
+from datetime import datetime, timezone
+import ast
+from rich.console import Console
+from rich.table import Column, Table
+import random
+import platform
+from discord_webhook import DiscordWebhook, DiscordEmbed
+from selenium.webdriver.chrome.options import Options
+from follow_graph import create_follow_graph
 
-    chrome_options=Options()
-    chrome_options.headless = True
-    chrome_options.add_argument("--no-sandbox")
-    chrome_options.add_argument("--disable-software-rasterizer")
-    chrome_options.add_argument("--log-level=3")
-    chrome_options.add_argument('--disable-dev-shm-usage')
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    chrome_options.add_experimental_option('useAutomationExtension', False)
-except:
-    print("Please run 'pip install -r requirements.txt' to install the required modules before running again.\n")
+chrome_options=Options()
+chrome_options.headless = True
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-software-rasterizer")
+chrome_options.add_argument("--log-level=3")
+chrome_options.add_argument('--disable-dev-shm-usage')
+chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
+chrome_options.add_experimental_option('useAutomationExtension', False)
 
 
 def init_driver():
