@@ -28,7 +28,11 @@ chrome_options.add_experimental_option('useAutomationExtension', False)
 
 def init_driver():
 
-    if 'mac' in platform.platform().lower():
+    if 'arm' in platform.platform().lower():
+        print('PC is Mac OS (ARM64), using chromedriver for MacOS ARM64 ...\n')
+        chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+        driver = webdriver.Chrome('./chromedriver_mac_arm64/chromedriver', chrome_options=chrome_options)
+    elif 'mac' in platform.platform().lower():
         print('PC is Mac OS, using chromedriver for MacOS ...\n')
         chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
         driver = webdriver.Chrome('./chromedriver_mac64/chromedriver', chrome_options=chrome_options)
